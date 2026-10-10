@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VibePlay | Couples & Friends</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f7f0ff;color:#302044;text-align:center;margin:0}
+header{background:#7028c9;color:white;padding:25px 12px}
+main{max-width:500px;margin:auto;padding:20px}
+.card{background:white;border-radius:16px;padding:18px;margin:15px 0;box-shadow:0 3px 12px #ddd}
+button{background:#7028c9;color:white;border:0;border-radius:10px;padding:13px;margin:5px;cursor:pointer;font-size:16px}
+#game{background:white;padding:20px;border-radius:16px;margin-top:20px}
+</style>
+</head>
+<body>
+<header>
+<h1>💜 VibePlay</h1>
+<p>Play with your favorite people!</p>
+</header>
+<main>
+<h2>Ready for some fun? 🎉</h2>
+<p>Challenge your partner or best friend!</p>
+
+<div class="card">
+<h3>💑 Couples Quiz</h3>
+<p>How well do you know each other?</p>
+<button onclick="start('couples')">Play Now</button>
+</div>
+
+<div class="card">
+<h3>🫶 Best Friend Test</h3>
+<p>Test your friendship!</p>
+<button onclick="start('friends')">Play Now</button>
+</div>
+
+<div class="card">
+<h3>🤔 Would You Rather?</h3>
+<p>Make a difficult choice!</p>
+<button onclick="start('rather')">Play Now</button>
+</div>
+
+<div id="game" hidden>
+<h2 id="title"></h2>
+<p id="progress"></p>
+<h3 id="question"></h3>
+<div id="answers"></div>
+<p id="result"></p>
+<button id="next" onclick="next()">Next Question</button>
+<button onclick="share()">Share Website</button>
+</div>
+</main>
+<footer><p>Made with 💜 by VibePlay</p></footer>
+
+<script>
+const games={
+couples:[
+["What's most important in a relationship?",["Trust","Honesty","Communication","All three"]],
+["Choose your ideal date.",["Movie night","Dinner date","Beach trip","Staying home"]],
+["What's a sweet surprise?",["A thoughtful note","A planned date","Their favorite food","Quality time"]]
+],
+friends:[
+["What makes a great friendship?",["Loyalty","Honesty","Fun","All three"]],
+["What's your favorite hangout?",["Movies","Shopping","Food","Staying home"]],
+["Who is most likely to be late?",["Me","My best friend","Both of us","Neither"]]
+],
+rather:[
+["Would you rather travel the world or own your dream home?",["Travel the world","Own my dream home"]],
+["Would you rather read minds or see the future?",["Read minds","See the future"]],
+["Would you rather have free food or free travel?",["Free food","Free travel"]]
+]};
+let questions=[],i=0,mode="";
+function start(type){
+mode=type;questions=games[type];i=0;
+document.getElementById("game").hidden=false;
+document.getElementById("title").textContent=
+type==="couples"?"💑 Couples Quiz":type==="friends"?"🫶 Best Friend Test":"🤔 Would You Rather?";
+show();
+document.getElementById("game").scrollIntoView({behavior:"smooth"});
+}
+function show(){
+document.getElementById("progress").textContent="Question "+(i+1)+" of "+questions.length;
+document.getElementById("question").textContent=questions[i][0];
+document.getElementById("result").textContent="";
+document.getElementById("next").hidden=true;
+let area=document.getElementById("answers");area.innerHTML="";
+questions[i][1].forEach(answer=>{
+let b=document.createElement("button");b.textContent=answer;
+b.onclick=()=>{
+area.querySelectorAll("button").forEach(x=>x.disabled=true);
+document.getElementById("result").textContent=
+mode==="rather"?"Good choice! Ask your friend what they would choose.":"Answer selected! Now ask your partner or friend to guess your answer.";
+document.getElementById("next").hidden=false;
+};
+area.appendChild(b);
+});
+}
+function next(){
+i++;
+if(i<questions.length){show();return;}
+document.getElementById("question").textContent="🎉 You finished!";
+document.getElementById("answers").innerHTML="";
+document.getElementById("progress").textContent="Great job playing VibePlay!";
+document.getElementById("result").textContent="Play again with someone and compare your answers!";
+document.getElementById("next").hidden=true;
+}
+async function share(){
+try{
+if(navigator.share){await navigator.share({title:"VibePlay",text:"Let's play a couples or friendship game!",url:location.href});}
+else{await navigator.clipboard.writeText(location.href);alert("Link copied!");}
+}catch(e){alert("Copy the website address from your browser to share it.");}
+}
+</script>
+</body>
+</html>
